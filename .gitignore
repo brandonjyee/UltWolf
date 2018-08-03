@@ -59,3 +59,8 @@ typings/
 
 # next.js build output
 .next
+
+
+public/bundle.js
+public/bundle.js.map
+secrets.js
