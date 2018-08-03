@@ -4,23 +4,21 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build-client": "webpack",
+    "build-client-watch": "webpack -w",
+    "start": "node server",
+    "start-dev": "NODE_ENV='development' npm run build-client-watch & npm run start-server",
+    "start-server": "nodemon server -e html,js,scss --ignore public --ignore client",
+    "test": "NODE_ENV='test' mocha \"./server/**/*.spec.js\" \"./client/**/*.spec.js\" \"./script/**/*.spec.js\" --require @babel/polyfill --require @babel/register"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/brandonjyee/UltWolf.git"
-  },
-  "keywords": [],
-  "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/brandonjyee/UltWolf/issues"
-  },
-  "homepage": "https://github.com/brandonjyee/UltWolf#readme",
   "dependencies": {
+    "@opentok/client": "^2.14.7",
     "axios": "^0.18.0",
     "body-parser": "^1.18.3",
+    "compression": "^1.7.1",
     "express": "^4.16.3",
+    "history": "^4.6.3",
     "morgan": "^1.9.0",
     "opentok": "^2.6.2",
     "react": "^16.4.2",
@@ -28,16 +26,20 @@
     "react-redux": "^5.0.7",
     "react-router-dom": "^4.3.1",
     "redux": "^4.0.0",
+    "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "socket.io": "^2.1.1"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
-    "babel-loader": "^7.1.5",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1",
-    "webpack": "^4.16.4"
+    "@babel/core": "7.0.0-beta.40",
+    "@babel/polyfill": "7.0.0-beta.40",
+    "@babel/preset-env": "7.0.0-beta.40",
+    "@babel/preset-react": "7.0.0-beta.40",
+    "@babel/preset-stage-2": "7.0.0-beta.40",
+    "@babel/register": "7.0.0-beta.40",
+    "babel-loader": "8.0.0-beta.2",
+    "redux-devtools-extension": "^2.13.2",
+    "webpack": "^4.16.4",
+    "webpack-cli": "^3.1.0"
   }
 }
