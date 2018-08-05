@@ -1,4 +1,4 @@
-const helper = require('../helper')
+const helper = require('../helper');
 const OpenTok = require('opentok');
 // const app = require('.');
 
@@ -12,70 +12,75 @@ if (!apiKey || !apiSecret) {
   process.exit(1);
 }
 
+module.exports.apiKey = apiKey
+
 const tok = new OpenTok(apiKey, apiSecret);
-const sessions = []
+// const sessions = [];
 
-module.exports.setupOpenTok = () => {
-  // const opentok = new OpenTok(apiKey, apiSecret);
+// module.exports.setupOpenTok = () => {
+//   // const opentok = new OpenTok(apiKey, apiSecret);
 
-  console.log('setupOpenTok. Creating a Tok session...');
-  // The session will the OpenTok Media Router:
-  tok.createSession({ mediaMode: 'routed' }, function(err, session) {
-    if (err) return console.log(err);
+//   console.log('setupOpenTok. Creating a Tok session...');
+//   // The session will the OpenTok Media Router:
+//   tok.createSession({ mediaMode: 'routed' }, function(err, session) {
+//     if (err) return console.log(err);
 
-    // save the sessionId
-    // db.save('session', session.sessionId, done);
+//     // save the sessionId
+//     // db.save('session', session.sessionId, done);
 
-    const sessionId = session.sessionId;
-    console.log('Tok sessionId:', helper.hashStr(sessionId));
-    const token = tok.generateToken(sessionId);
-    console.log('Tok token:', helper.hashStr(token));
+//     const sessionId = session.sessionId;
+//     console.log('Tok sessionId:', helper.hashStr(sessionId));
+//     const token = tok.generateToken(sessionId);
+//     console.log('Tok token:', helper.hashStr(token));
 
-    // app.set('sessionId', session.sessionId);
+//     // app.set('sessionId', session.sessionId);
 
-    // We will wait on starting the app until this is done
-    // callback();
-  });
-};
+//     // We will wait on starting the app until this is done
+//     // callback();
+//   });
+// };
 
-
-
-const getNewSessionInfo = async () => {
-  // const opentok = new OpenTok(apiKey, apiSecret);
-
-  console.log('getNewSessionInfo. Creating a Tok session...');
+module.exports.createSession = async () => {
+  console.log('createSession(). Creating a Tok session...');
   const waitForSessionInfo = new Promise((resolve, reject) => {
     // The session will the OpenTok Media Router:
     tok.createSession({ mediaMode: 'routed' }, function(err, session) {
       if (err) {
-        reject(err)
+        reject(err);
         return console.log(err);
       }
 
       const sessionId = session.sessionId;
       console.log('Tok sessionId:', helper.hashStr(sessionId));
-      const token = tok.generateToken(sessionId);
-      console.log('Tok token:', helper.hashStr(token));
+      // const token = tok.generateToken(sessionId);
+      // console.log('Tok token:', helper.hashStr(token));
 
-      resolve([ sessionId, token ])
+      // resolve([sessionId, token]);
+      resolve(sessionId);
     });
   });
-  const [sessionId, token] = await waitForSessionInfo
-  console.log('waited for creation of sessionId and token. sessionId:', helper.hashStr(sessionId), 'token:', helper.hashStr(token))
-  const sessionInfo = [apiKey, sessionId, token]
-  sessions.push(sessionInfo)
-  return sessionInfo
+  const sessionId = await waitForSessionInfo;
+  console.log(
+    'waited for creation of sessionId and token. sessionId:',
+    helper.hashStr(sessionId)
+    // 'token:',
+    // helper.hashStr(token)
+  );
+  // const sessionInfo = [apiKey, sessionId, token];
+  // sessions.push(sessionInfo);
+  // return sessionInfo;
+  return sessionId
 };
-module.exports.getNewSessionInfo = getNewSessionInfo
+// module.exports.createSession = createSession;
 
-module.exports.findOrCreateSessionInfo = () => {
-  if (sessions.length) {
-    return sessions[0]
-  } else {
-    return getNewSessionInfo()
-  }
-}
+// module.exports.findOrCreateSessionInfo = () => {
+//   if (sessions.length) {
+//     return sessions[0];
+//   } else {
+//     return createSession();
+//   }
+// };
 
-module.exports.getNewToken = (sessionId) => {
-  return tok.generateToken(sessionId)
-}
+module.exports.createToken = sessionId => {
+  return tok.generateToken(sessionId);
+};

@@ -1,4 +1,4 @@
-const { ClientListensFor, ServerSends, GameStates } = require('./MsgType');
+const { ClientListensFor, ServerSends, GameStateUpdates } = require('./MsgType');
 
 const createMsgToClient = (type, data) => ({ type, data });
 
@@ -12,5 +12,5 @@ module.exports.sendTokFeedToClient = (socket, apiKey, sessionId, token) => {
 };
 
 module.exports.sendGameStartedToClient = (socket) => {
-  sendToClient(socket, ServerSends.GIVE_GAMESTATE_UPDATE, GameStates.STARTED);
+  sendToClient(socket, ServerSends.GIVE_GAMESTATE_UPDATE, GameStateUpdates.GAME_STARTED);
 };
