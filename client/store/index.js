@@ -2,9 +2,12 @@ import {createStore, combineReducers, applyMiddleware} from 'redux'
 import {createLogger} from 'redux-logger'
 import thunkMiddleware from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
+import tokData from './tokdata'
+import gameState from './gameState'
 
 const reducer = combineReducers({
-  state: (state = {}) => state
+  tokData,
+  gameState
 })
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))

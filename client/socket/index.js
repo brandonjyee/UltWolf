@@ -1,26 +1,26 @@
 import io from 'socket.io-client';
-import { ClientSends, ServerSends, ClientListensFor } from './MsgType';
-import setupOT from '../opentok';
+import { ServerSends, ClientListensFor } from './MsgType';
+import { handleGotTokFeed, handleGameStateUpdate } from './handlers';
 
 const socket = io(window.location.origin);
+console.log('Creating a socket connection to namespace:', window.location.origin)
 
 socket.on('connect', () => {
   console.log('websocket Connected!');
-  // After receiving apiKey, sessionId, and token, can set up tok
-  // setupOT(apiKey, sessionId, token)
 });
 
-socket.on(ClientListensFor.SERVER_UPDATE, function(serverMsg) {
+// Dispatch to the appropriate handler
+socket.on(ClientListensFor.SERVER_UPDATE, serverMsg => {
   console.log('Received socket msg from server:', serverMsg);
+  const data = serverMsg.data;
   switch (serverMsg.type) {
-    case ServerSends.GIVE_TOK_FEED: {
-      const [apiKey, sessionId, token] = serverMsg.data;
-      setupOT(apiKey, sessionId, token);
+    case ServerSends.GIVE_TOK_FEED:
+      return handleGotTokFeed(data);
+    case ServerSends.GIVE_GAMESTATE_UPDATE:
+      return handleGameStateUpdate(data);
+    default:
       break;
-    }
-    default: break;
   }
-  // processServerUpdate(serverMsg);
 });
 
 export default socket;

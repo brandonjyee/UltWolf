@@ -9,10 +9,12 @@ if (process.env.NODE_ENV !== 'production') require('../secrets');
 
 const express = require('express');
 const path = require('path');
-const {setupOpenTok} = require('./opentok')
+// const {setupOpenTok} = require('./opentok')
 const socketio = require('socket.io');
 const morgan = require('morgan')
 const compression = require('compression')
+const https = require('https')
+const fs = require('fs')
 
 const PORT = process.env.PORT || 3000;
 
@@ -67,9 +69,21 @@ const createApp = () => {
 // Start the express app
 function startListening() {
   // Start listening (and create a 'server' object representing our server)
-  const server = app.listen(PORT, () => {
+  const certOptions = {
+    // key: fs.readFileSync(path.resolve('server.key')),
+    // cert: fs.readFileSync(path.resolve('server.crt'))
+    key: fs.readFileSync('./server.key'),
+    cert: fs.readFileSync('./server.crt')
+  }
+
+  // Set server to HTTPS which is required for browsers to do video
+  const server = https.createServer(certOptions, app).listen(443, () => {
     console.log(`You're app is now ready at http://localhost:${PORT}/`);
-  });
+  })
+
+  // const server = app.listen(PORT, () => {
+  //   console.log(`You're app is now ready at http://localhost:${PORT}/`);
+  // });
 
   // Set up our socket control center
   const io = socketio(server);

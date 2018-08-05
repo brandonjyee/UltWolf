@@ -21,9 +21,15 @@ module.exports.ServerSends = {
   GIVE_ANNOUNCER_MSG: "announcer-msg",
   ASK_DO_ROLE_ACTION: "do-role-action",
   GIVE_STATS: "stats",
-  GIVE_TOK_FEED: "GIVE_TOK_FEED"
+  GIVE_TOK_FEED: "GIVE_TOK_FEED",
+  GIVE_GAMESTATE_UPDATE: "GIVE_GAMESTATE_UPDATE"
 };
 // Endpoints that server listens on
 module.exports.ServerListensFor = {
   ASK_SERVER: "ask-server"
+}
+
+// ========= Game States =========
+module.exports.GameStateUpdates = {
+  GAME_STARTED: "GAME_STARTED"
 }

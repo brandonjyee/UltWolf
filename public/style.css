@@ -1,3 +1,53 @@
 .flex {
   display: flex;
 }
+
+body {
+  background-image: url('/img/stardust.png')
+}
+
+/* =========== Game Board =========== */
+#game-board {
+  /* width: 1200px;
+  height: 1000px; */
+  /* margin: auto; */
+  width:100%;
+  height:100%;
+}
+
+.role-card {
+  width: 37px;
+  height: 50px;
+}
+
+#center-cards {
+  display: flex;
+  justify-content: center;
+  margin: 15px;
+}
+
+/* =========== Players =========== */
+.player-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#player-cards {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+/* The video feed element */
+#publisher {
+  display: flex;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin: 5px;
+}
+
+#subscribers {
+  display: flex;
+}
