@@ -77,6 +77,7 @@ module.exports = io => {
       console.error('Existing socket data with id:', serverSocket.id);
     }
 
+    // First thing is create a unique playerId
     const playerId = GamesManager.createPlayer();
     sendPlayerInfoToClient(serverSocket, playerId, 'Mr. Smith');
 
@@ -115,7 +116,7 @@ module.exports = io => {
     };
 
     // Video feed: send tok apiKey, sessionId, token
-    sendTokFeedToClient(serverSocket, apiKey, sessionId, token);
+    sendTokFeedToClient(serverSocket, playerId, apiKey, sessionId, token);
   });
 };
 

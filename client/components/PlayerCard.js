@@ -1,8 +1,8 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-import { connect } from 'react-redux';
-import ReactDOM from 'react-dom';
+// import { connect } from 'react-redux';
+// import ReactDOM from 'react-dom';
 
 const cardImageMap = {
   ROBBER: '/img/roles/robber.png',
@@ -13,11 +13,10 @@ const cardImageMap = {
 };
 
 const PlayerCard = props => {
-  const { publisherRef, thisVideoElem } = props;
+  const { publisherRef, videoElem } = props;
   if (publisherRef) {
     console.log('In PlayerCard. publisherRef.current:', publisherRef.current);
   }
-  // const portalContainer = document.getElementById('abc123')
   return (
     <div>
       <Card>
@@ -28,28 +27,33 @@ const PlayerCard = props => {
           ) : (
             <img className="role-card" src="/img/roles/card-back.png" />
           )}
+          {/* This just prints out [object HTMLVideoElement] */}
+          {/* <div>
+            {thisVideoElem && thisVideoElem.toString()}
+          </div> */}
           <div
-            id="abc123"
             className="player-video"
             ref={el => {
-              if (thisVideoElem) {
-                thisVideoElem.style.height = '150px';
-                thisVideoElem.style.width = '200px';
-                thisVideoElem.style.borderRadius = '50%';
-                el.appendChild(thisVideoElem);
+              if (videoElem && el) {
+                videoElem.style.height = '150px';
+                videoElem.style.width = '200px';
+                // thisVideoElem.style.borderRadius = '50%';
+                // Clear out the element and set the child as the video
+                el.innerHTML = '';
+                el.appendChild(videoElem);
               }
             }}
           >
-            {/* {thisVideoElem && thisVideoElem} */}
+            {/* Will be filled by video */}
           </div>
           <div>{props.playerName}</div>
-          {/* { ReactDOM.createPortal(thisVideoElem, portalContainer) } */}
         </CardContent>
       </Card>
     </div>
   );
 };
 
-const mapStateToProps = ({ thisVideoElem }) => ({ thisVideoElem });
+// const mapStateToProps = ({ thisVideoElem }) => ({ thisVideoElem });
 
-export default connect(mapStateToProps)(PlayerCard);
+// export default connect(mapStateToProps)(PlayerCard);
+export default PlayerCard

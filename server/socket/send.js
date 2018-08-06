@@ -13,8 +13,8 @@ module.exports.sendPlayerInfoToClient = (socket, playerId, playerName) => {
 };
 
 // Send tok apiKey, sessionId, token
-module.exports.sendTokFeedToClient = (socket, apiKey, sessionId, token) => {
-  sendToClient(socket, ServerSends.GIVE_TOK_FEED, [apiKey, sessionId, token]);
+module.exports.sendTokFeedToClient = (socket, playerId, apiKey, sessionId, token) => {
+  sendToClient(socket, ServerSends.GIVE_TOK_FEED, [playerId, apiKey, sessionId, token]);
 };
 
 module.exports.sendPlayerJoinedToClient = (socket, allPlayers) => {

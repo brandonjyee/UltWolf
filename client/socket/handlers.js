@@ -11,7 +11,7 @@ import {gotErrorFromServer} from '../store/err'
 
 // After receiving apiKey, sessionId, and token, can set up tok
 export const handleGotTokFeed = (data) => {
-  const [apiKey, sessionId, token] = data;  // set playerId on stream
+  const [playerId, apiKey, sessionId, token] = data;
   console.log(
     'Received TOK msg from server. apiKey:',
     apiKey,
@@ -20,7 +20,7 @@ export const handleGotTokFeed = (data) => {
     'token:',
     token
   );
-  setupOT(apiKey, sessionId, token);
+  setupOT(playerId, apiKey, sessionId, token);
   console.log('Dispatching tokData to redux');
   store.dispatch(gotTokDataFromServer(apiKey, sessionId, token));
 };
