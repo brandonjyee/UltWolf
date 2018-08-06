@@ -1,6 +1,8 @@
 import OT from '@opentok/client';
 // import store from '../store'
 // import {gotTokDataFromServer} from '../store/tokdata'
+import store from '../store'
+import {setThisVideo} from '../store/thisVideoElem'
 
 const pubOptions = {
   publishAudio: true,
@@ -8,6 +10,9 @@ const pubOptions = {
   width: 50,
   height: 50,
   resolution: '320x240', // Supports: 1280x720; 640x480 (default); 320x240
+  name: 'asdf', // Set to playerId. Subscribers can access event.stream.name
+  style: { nameDisplayMode: 'auto' },  // or 'off'
+  insertDefaultUI: false,   // Going to stick the DOM elem where we want it later
 };
 
 const subOptions = {
@@ -28,6 +33,7 @@ const sessionConnected = (session, publisher) => {
   };
 };
 
+// Triggers when other ppl publish their streams to this session
 const streamCreated = session => {
   return event => {
     console.log(
@@ -50,18 +56,30 @@ const streamCreated = session => {
 const streamPropertyChanged = (session) => {
   return event => {
     console.log('received streamPropertyChanged event. event:', event);
-    const subscribers = session.getSubscribersForStream(event.stream);
-    for (var i = 0; i < subscribers.length; i++) {
+    // const subscribers = session.getSubscribersForStream(event.stream);
+    // for (var i = 0; i < subscribers.length; i++) {
       // You may want to display some UI text for each
       // subscriber, or make some other UI change,
       // based on event.changedProperty and
       // event.newValue
-    }
+    // }
   };
 };
 
+const videoElementCreated = (session) => {
+  return event => {
+    console.log('In publisher videoElementCreated(). event:', event, 'event.element:', event.element)
+    // const subContainer = document.createElement('div');
+    // subContainer.id = 'stream-fdsa123'; //+ event.stream.streamId;
+    // document.getElementById('publisher').appendChild(subContainer);
+    // subContainer.appendChild(event.element)
+    store.dispatch(setThisVideo(event.element))
+  }
+}
+
 const setupEventHandlers = (session, publisher) => {
   // Attach event handlers to this session.
+  publisher.on('videoElementCreated', videoElementCreated(session))
   session.on({
     // This function runs when session.connect() asynchronously completes
     sessionConnected: sessionConnected(session, publisher),
@@ -69,6 +87,7 @@ const setupEventHandlers = (session, publisher) => {
     // This function runs when another client publishes a stream (eg. session.publish())
     streamCreated: streamCreated(session),
     streamPropertyChanged: streamPropertyChanged(session),
+    videoElementCreated: videoElementCreated(session),
   });
 };
 
@@ -78,7 +97,8 @@ const setupOT = (apiKey, sessionId, token) => {
 
   const replacementElemId = 'publisher';
   // Initialize a Publisher, and place it into the element with id="publisher"
-  const publisher = OT.initPublisher(replacementElemId, pubOptions);
+  // const publisher = OT.initPublisher(replacementElemId, pubOptions);
+  const publisher = OT.initPublisher(null, pubOptions);
 
   // Set up publishing and subscribing
   setupEventHandlers(session, publisher);

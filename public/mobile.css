@@ -16,8 +16,8 @@ body {
 }
 
 .role-card {
-  width: 132px;
-  height: 181px;
+  width: 37px;
+  height: 50px;
 }
 
 #center-cards {
@@ -29,25 +29,17 @@ body {
 /* =========== Players =========== */
 .player-card {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 }
 
 #player-cards {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: space-around;
 }
 
 /* The video feed element */
-
-.player-video {
-  width: 200px;
-  height: 150px;
-  border-radius: 50%;
-  margin: 5px;
-}
-
 #publisher {
   display: flex;
   width: 50px;

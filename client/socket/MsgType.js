@@ -17,12 +17,15 @@ export const ClientListensFor = {
 export const ServerSends = {
   GIVE_CLIENT_ID: "client-id",
   GIVE_GAME_ID: "game-session-id",
+  GIVE_PLAYER_INFO: "GIVE_PLAYER_INFO",
   GIVE_ROLE: "give-role",
   GIVE_ANNOUNCER_MSG: "announcer-msg",
   ASK_DO_ROLE_ACTION: "do-role-action",
   GIVE_STATS: "stats",
   GIVE_TOK_FEED: "GIVE_TOK_FEED",
-  GIVE_GAMESTATE_UPDATE: "GIVE_GAMESTATE_UPDATE"
+  GIVE_GAMESTATE_UPDATE: "GIVE_GAMESTATE_UPDATE",
+  GIVE_PLAYER_JOINED_GAME: "GIVE_PLAYER_JOINED_GAME",
+  GIVE_ERROR: "GIVE_ERROR",
 };
 // Endpoints that server listens on
 export const ServerListensFor = {

@@ -1,4 +1,4 @@
-const { create_N_UUIDs, shuffle } = require('./GameUtil');
+const { createUUIDs, shuffle } = require('./GameUtil');
 const { ROBBER, SEER, TROUBLEMAKER, VILLAGER, WEREWOLF } = require('./Card');
 
 class Deck {
@@ -6,7 +6,7 @@ class Deck {
     this.cards = this._generateRandomDeck(numPlayers);
   }
 
-  get numCards() {
+  getNumCards() {
     return this.cards.length;
   }
 
@@ -47,7 +47,7 @@ class Deck {
           +2 Villagers
     */
     const numCards = numPlayers + 3;
-    const cardIds = create_N_UUIDs(numCards);
+    const cardIds = createUUIDs(numCards);
     const cards = [];
     cards.push(
       WEREWOLF(cardIds.pop()),

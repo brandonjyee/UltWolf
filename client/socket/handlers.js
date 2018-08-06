@@ -1,13 +1,17 @@
 import setupOT from './opentok';
 import store from '../store'
 import {gotTokDataFromServer} from '../store/tokdata'
+import {setPlayers} from '../store/players'
+import {setThisPlayer} from '../store/thisPlayer'
 import {gotGameStateUpdateFromServer, GS_WAIT_FOR_ROLE_CARD} from '../store/gameState'
+import {setRole} from '../store/role'
+import {gotErrorFromServer} from '../store/err'
 
 // ======  Functions here handle messages from the server ========
 
 // After receiving apiKey, sessionId, and token, can set up tok
 export const handleGotTokFeed = (data) => {
-  const [apiKey, sessionId, token] = data;
+  const [apiKey, sessionId, token] = data;  // set playerId on stream
   console.log(
     'Received TOK msg from server. apiKey:',
     apiKey,
@@ -19,6 +23,18 @@ export const handleGotTokFeed = (data) => {
   setupOT(apiKey, sessionId, token);
   console.log('Dispatching tokData to redux');
   store.dispatch(gotTokDataFromServer(apiKey, sessionId, token));
+};
+
+export const handleThisPlayerInfo = (playerData) => {
+  console.log('handleThisPlayerInfo. playerData:', playerData);
+  const [playerId, playerName] = playerData
+  store.dispatch(setThisPlayer(playerId, playerName));
+};
+
+export const handlePlayerJoined = (allPlayers) => {
+  console.log('handlePlayerJoined. allPlayers:', allPlayers);
+  // const [playerId, playerName] = playerData
+  store.dispatch(setPlayers(allPlayers));
 };
 
 export const handleGameStateUpdate = (stateUpdate) => {
@@ -33,3 +49,12 @@ export const handleGameStateUpdate = (stateUpdate) => {
   }
   store.dispatch(gotGameStateUpdateFromServer(newState));
 };
+
+export const handleGotRole = (role) => {
+  console.log('handleGotRole. role:', role);
+  store.dispatch(setRole(role));
+};
+
+export const handleError = (err) => {
+  store.dispatch(gotErrorFromServer(err));
+}

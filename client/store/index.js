@@ -4,10 +4,22 @@ import thunkMiddleware from 'redux-thunk'
 import {composeWithDevTools} from 'redux-devtools-extension'
 import tokData from './tokdata'
 import gameState from './gameState'
+import err from './err'
+import msgDisplay from './msgDisplay'
+import players from './players'
+import role from './role'
+import thisPlayer from './thisPlayer'
+import thisVideoElem from './thisVideoElem'
 
 const reducer = combineReducers({
+  err,
+  gameState,
+  msgDisplay,
+  players,
+  role,
+  thisPlayer,
+  thisVideoElem,
   tokData,
-  gameState
 })
 const middleware = composeWithDevTools(
   applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))

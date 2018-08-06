@@ -4,28 +4,18 @@ const {
   ClientSends,
   // ServerSends,
 } = require('./MsgType');
-// const { findOrCreateSessionInfo } = require('./opentok');
 const { apiKey, createSession, createToken } = require('./opentok');
 const helper = require('../helper');
-const { sendTokFeedToClient } = require('./send');
+const { sendPlayerInfoToClient, sendTokFeedToClient } = require('./send');
 const { handleAskStartGame } = require('./handlers');
 const GamesManager = require('../game/GamesManager');
-const {
-  GAME_STARTED,
-  PLAYER_GETS_ROLE_CARD,
-  PLAYER_JOINED_GAME,
-} = require('../game/GameEvents');
+const { registerGameListeners } = require('./gameListeners');
 
-// const sendToClient = (socket, playerId, msg) => {
-//   // let socket = gs.playerToSocketMap[playerId];
-//   if (!socket) {
-//       console.error("No socket for player. playerId: " + playerId);
-//   } else if (!socket.connected) {
-//       console.error("Socket exists but is not connected. playerId: " + playerId);
-//   } else {
-//       socket.emit(MsgType.ClientEndpoint.ServerUpdate, msg);
-//   }
-// }
+// const Game = require('../game/Game');
+// const {
+//   GE_GAME_STARTED,
+//   GE_PLAYER_JOINED_GAME,
+// } = require('../game/GameEvents');
 
 /*
 Holds a map of socketIds to:
@@ -39,9 +29,13 @@ Holds a map of socketIds to:
 const socketIdMap = {};
 
 /*
-Holds a map of gameIds to tokSessions
+Holds a map of gameIds to tok sessionIds
 */
 const gameIdMap = {};
+
+const getPlayerId = socket => socketIdMap[socket.id].playerId;
+const getGame = socket => socketIdMap[socket.id].game;
+const getTokData = socket => socketIdMap[socket.id].tokData;
 
 const registerSocketListeners = serverSocket => {
   serverSocket.on('join-room', room => {
@@ -52,27 +46,17 @@ const registerSocketListeners = serverSocket => {
     try {
       switch (clientMsg.type) {
         case ClientSends.ASK_TO_START_GAME:
-          return handleAskStartGame(serverSocket);
+          return handleAskStartGame(
+            serverSocket,
+            getPlayerId(serverSocket),
+            getGame(serverSocket)
+          );
         default:
           break;
       }
     } catch (err) {
       console.error(err);
     }
-  });
-};
-
-const registerGameListeners = (game, serverSocket) => {
-  game.on(GAME_STARTED, () => {
-    // do stuff
-  });
-
-  game.on(PLAYER_GETS_ROLE_CARD, () => {
-    // do stuff
-  });
-
-  game.on(PLAYER_JOINED_GAME, () => {
-    // do stuff
   });
 };
 
@@ -93,15 +77,26 @@ module.exports = io => {
       console.error('Existing socket data with id:', serverSocket.id);
     }
 
-    // Assume player has joined a game
-    // serverSocket.on('join-game', () => {})
-    // Create player in game and get playerId
     const playerId = GamesManager.createPlayer();
-    const game = GamesManager.joinAGame(playerId);
+    sendPlayerInfoToClient(serverSocket, playerId, 'Mr. Smith');
+
+    // Join a game
+    const game = GamesManager.findOrCreateAGame();
+    console.log(
+      'GamesManager.findOrCreateAGame() returned a game with id:',
+      game.getId()
+    );
+    // Need to register listeners for the Game before joining game to catch all updates
+    registerGameListeners(game, playerId, serverSocket);
+    GamesManager.joinGame(playerId, game);
 
     // sessionId will be the same for players in the same game
-    // Try to look for an existing tok session associated with a game
-    const sessionId = await createSession();
+    // Try to look for an existing tok session associated with the game
+    let sessionId = gameIdMap[game.getId()];
+    if (!sessionId) {
+      sessionId = await createSession();
+      gameIdMap[game.getId()] = sessionId;
+    }
     // token will be different for every player
     const token = createToken(sessionId);
     console.log(
@@ -119,10 +114,28 @@ module.exports = io => {
       tokData: { sessionId, token },
     };
 
-    // Need to register listeners for the Game
-    registerGameListeners(game, serverSocket);
-
     // Video feed: send tok apiKey, sessionId, token
     sendTokFeedToClient(serverSocket, apiKey, sessionId, token);
   });
 };
+
+// console.log('Created new game manually.')
+// const myGame = new Game('1234')
+// myGame.on(GE_GAME_STARTED, () => { console.log('myGame has started!')})
+// myGame.on(GE_PLAYER_JOINED_GAME, () => { console.log('myGame has a new player!')})
+// console.log('Set listener on game. Adding players to game and starting game...')
+// myGame.addPlayer('1')
+// myGame.addPlayer('2')
+// myGame.addPlayer('3')
+// myGame.startGame()
+
+// Assume player has joined a game
+// serverSocket.on('join-game', () => {})
+// Create player in game and get playerId
+// const newGame = GamesManager.createNewGame();
+// newGame.on(GE_GAME_STARTED, () => { console.log('0 game has started!')})
+// newGame.on(GE_PLAYER_JOINED_GAME, () => { console.log('0 game has a new player!')})
+// newGame.addPlayer('1')
+// newGame.addPlayer('2')
+// newGame.addPlayer('3')
+// newGame.startGame()

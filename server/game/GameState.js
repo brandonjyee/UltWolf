@@ -56,6 +56,6 @@ module.exports.GS_WAIT_FOR_ROLE_INPUTS = 'GS_WAIT_FOR_ROLE_INPUTS';
 //   },
 // };
 
-Object.freeze(GameState);
+// Object.freeze(GameState);
 
-module.exports.GameState = GameState;
+// module.exports.GameState = GameState;

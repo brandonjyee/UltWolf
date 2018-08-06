@@ -8,8 +8,9 @@ class Card {
     this.role = role;
   }
 
-  get id() { return this.id; }
-  get role() { return this.role; }
+  getId() { return this.id; }
+  getRole() { return this.role; }
+  toString() { return `id: ${this.id}. role: ${this.role}`}
 }
 
 // module.exports = Card;

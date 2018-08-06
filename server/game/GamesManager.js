@@ -6,16 +6,11 @@ class GamesManager {
   constructor() {
     // Map of gameId to game
     this.games = {};
-    /* Map of serverPlayerIds to:
-    {
-      game,
-      inGamePlayerId  // Deprecated. Will be same as serverPlayerId
-    }
-    */
+    // Map of serverPlayerIds to game
     this.players = {};
   }
 
-  _createNewGame() {
+  createNewGame() {
     let created = false;
     while (!created) {
       const gameId = uuidv4();
@@ -35,42 +30,43 @@ class GamesManager {
     let created = false;
     while (!created) {
       const serverPlayerId = uuidv4();
-      // Create a new game session if there's no existing session with the given id
       if (!this.players[serverPlayerId]) {
-        this.players[serverPlayerId] = { game: null, inGamePlayerId: '' };
+        // this.players[serverPlayerId] = { game: null};
         created = true;
         return serverPlayerId;
       }
     }
   }
 
-  // Return the game that was joined
-  joinAGame(serverPlayerId) {
+  findOrCreateAGame() {
+    console.log('In findOrCreateAGame()');
     // First search for a game that's waiting for players
-    const foundGame = Object.entries(this.games).find(({ gameId, game }) => {
-      if (game.gameState() === GS_WAIT_TO_START) {
-        const inGamePlayerId = game.createPlayer(serverPlayerId);
-        // Update player data
-        this.players[serverPlayerId] = {
-          game,
-          inGamePlayerId,
-        };
-        return true;
-      }
-      return false;
+    const foundGame = Object.values(this.games).find(game => {
+      // console.log('In findOrCreateAGame() game entries. game:', game);
+      return game.canJoin();
     });
-    // If can't find any, create a new game
-    if (!foundGame) {
-      const newGame = this._createNewGame();
-      this.games[newGame.id()] = newGame
-      const inGamePlayerId = newGame.createPlayer(serverPlayerId);
-      // Update player data
-      this.players[serverPlayerId] = {
-        game: newGame,
-        inGamePlayerId,
-      };
-      return newGame;
+    if (foundGame) {
+      return foundGame;
     }
+    console.log('Could not find a game to join. Creating a new one.');
+
+    // If can't find any open games, create a new game
+    const newGame = this.createNewGame();
+    this.games[newGame.getId()] = newGame;
+    return newGame;
+  }
+
+  // Return the game that was joined
+  joinGame(serverPlayerId, game) {
+    console.log(
+      'In joinGame(). playerId:',
+      serverPlayerId,
+      'gameId:',
+      game.getId()
+    );
+    game.addPlayer(serverPlayerId);
+    // Update player data
+    this.players[serverPlayerId] = game;
   }
 }
 
