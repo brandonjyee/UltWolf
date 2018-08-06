@@ -6,6 +6,7 @@ import {setThisPlayer} from '../store/thisPlayer'
 import {gotGameStateUpdateFromServer, GS_WAIT_FOR_ROLE_CARD} from '../store/gameState'
 import {setRole} from '../store/role'
 import {gotErrorFromServer} from '../store/err'
+import {setCopyOfAllCards} from '../store/allCards'
 
 // ======  Functions here handle messages from the server ========
 
@@ -39,15 +40,20 @@ export const handlePlayerJoined = (allPlayers) => {
 
 export const handleGameStateUpdate = (stateUpdate) => {
   console.log('handleGameStateUpdate. stateUpdate:', stateUpdate);
-  let newState = '';
-  switch (stateUpdate) {
-    case 'GAME_STARTED': { newState = GS_WAIT_FOR_ROLE_CARD; break; }
+  const [state, data] = stateUpdate;
+  switch (state) {
+    case 'GAME_STARTED': {
+      const allPlayers = data
+      store.dispatch(setCopyOfAllCards(allPlayers));
+      store.dispatch(gotGameStateUpdateFromServer(GS_WAIT_FOR_ROLE_CARD));
+      break;
+    }
     default: {
       console.error('Received unknown stateUpdate from Server:', stateUpdate);
       break;
     }
   }
-  store.dispatch(gotGameStateUpdateFromServer(newState));
+
 };
 
 export const handleGotRole = (role) => {

@@ -7,7 +7,10 @@ const {
   GE_PLAYER_JOINED_GAME,
   GE_GAME_STARTED,
   GE_PLAYER_GETS_ROLE_CARD,
+  GE_WAIT_FOR_NIGHT_ACTIONS,
 } = require('./GameEvents');
+
+
 
 class Game extends EventEmitter {
   // GameManager will provide an id for the Game
@@ -23,6 +26,10 @@ class Game extends EventEmitter {
 
   getId() {
     return this.id;
+  }
+
+  getCopyOfAllCards() {
+    return this.deck.getCopyOfAllCards();
   }
 
   getNumPlayers() {
@@ -61,8 +68,8 @@ class Game extends EventEmitter {
     const newPlayer = new Player(playerId);
     this.players[playerId] = newPlayer;
 
-    // Emit the full state of
-    this.emit(GE_PLAYER_JOINED_GAME, playerId);
+    // Emit the full state of players
+    this.emit(GE_PLAYER_JOINED_GAME, this.getAllPlayerInfo());
 
     return playerId;
   }
@@ -97,8 +104,29 @@ class Game extends EventEmitter {
       this.emit(GE_PLAYER_GETS_ROLE_CARD, player.getId(), card);
     });
 
+    // Display to user what the character's night action is
+    // or client-side already has that info
+
+    // Announcer announces night phase
+
+    // const intervalStopper = {};
+    // let secondsCount = 10;
+    // var interval = setInterval(() => {
+    //   // Clear the interval when the timer has finished
+    //   if (secondsCount <= 0) {
+    //     clearInterval(interval);
+    //   } else {
+    //     secondsCount--;
+    //   }
+    // }, 1000)
+
     // Game is now waiting for players to do their role action
     this.gameState = GS_WAIT_FOR_ROLE_INPUTS;
+
+    // Ask clients for role action. Provide data for each role
+    // Will compute data for each player and generate map of playerId -> data
+    this.emit(GE_WAIT_FOR_NIGHT_ACTIONS, )
+
     return true;
   }
 }

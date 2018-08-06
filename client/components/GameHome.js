@@ -5,6 +5,8 @@ import Button from '@material-ui/core/Button';
 import { askServerToStartGame } from '../socket/send';
 import SnackDisplay from './SnackDisplay';
 import ErrorDisplay from './ErrorDisplay';
+import TopInfoBar from './TopInfoBar';
+import Timer from './Timer'
 // import 'hashwords' // In a browser context, gets added to window.hashwords
 // const hw = window.hashwords
 // const hw2 = window.hashwords()
@@ -26,18 +28,11 @@ class GameHome extends React.Component {
     console.log('In GameHome.render. tokData:', tokData);
     return (
       <div>
-        <div id="publisher" ref={this.publisherRef} />
-        <div id="subscribers" ref={this.subscribersRef} />
         <SnackDisplay />
         <ErrorDisplay />
-        {/* <div>
-          <ul>
-            <li>apiKey: {tokData.apiKey}</li>
-            <li>sessionId: {tokData.sessionId}</li>
-            <li>token: {tokData.token}</li>
-          </ul>
-        </div> */}
-        <GameBoard publisherRef={this.publisherRef} />
+        <Timer />
+        <TopInfoBar />
+        <GameBoard />
         <Button onClick={this.handleClickStartGame} variant="contained">
           Start Game
         </Button>

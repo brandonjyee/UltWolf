@@ -2,7 +2,7 @@ const {randName, uuidv4} = require('./GameUtil')
 
 class Player {
   constructor(id) {
-    this.name = randName;
+    this.name = randName();
     this.id = id || uuidv4()
 
     // Game-specific data.

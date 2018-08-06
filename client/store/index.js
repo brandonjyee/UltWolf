@@ -11,8 +11,10 @@ import role from './role'
 import thisPlayer from './thisPlayer'
 import thisVideoElem from './thisVideoElem'
 import playersVideoElem from './playersVideoElem'
+import allCards from './allCards'
 
 const reducer = combineReducers({
+  allCards,
   err,
   gameState,
   msgDisplay,

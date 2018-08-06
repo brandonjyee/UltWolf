@@ -38,6 +38,13 @@ class GamesManager {
     }
   }
 
+  removePlayer(playerId) {
+    const game = this.players[playerId];
+    if (game) {
+      //game  todo
+    }
+  }
+
   findOrCreateAGame() {
     console.log('In findOrCreateAGame()');
     // First search for a game that's waiting for players
@@ -56,7 +63,6 @@ class GamesManager {
     return newGame;
   }
 
-  // Return the game that was joined
   joinGame(serverPlayerId, game) {
     console.log(
       'In joinGame(). playerId:',

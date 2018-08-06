@@ -1,9 +1,26 @@
 const { createUUIDs, shuffle } = require('./GameUtil');
-const { ROBBER, SEER, TROUBLEMAKER, VILLAGER, WEREWOLF } = require('./Card');
+const {
+  ROBBER,
+  SEER,
+  TROUBLEMAKER,
+  VILLAGER,
+  WEREWOLF,
+} = require('./Card');
 
 class Deck {
   constructor(numPlayers) {
     this.cards = this._generateRandomDeck(numPlayers);
+    this.copyOfAllCards = this.cards.map(card => {
+      return card.copy()
+    });
+  }
+
+  getCopyOfAllCards() {
+    const allCardsCopy = this.copyOfAllCards.map(card => {
+      return card.copy()
+    });
+    shuffle(allCardsCopy)
+    return allCardsCopy
   }
 
   getNumCards() {
@@ -11,27 +28,27 @@ class Deck {
   }
 
   shuffleDeck() {
-    shuffle(this.cards)
+    shuffle(this.cards);
   }
 
   popCard() {
     if (this.cards.length) {
-      return this.cards.pop()
+      return this.cards.pop();
     } else {
-      console.error('Popping from an empty deck')
+      console.error('Popping from an empty deck');
     }
   }
 
   peekCard() {
     if (this.cards.length) {
-      return this.cards[this.cards.length - 1]
+      return this.cards[this.cards.length - 1];
     } else {
-      console.error('Peeking from an empty deck')
+      console.error('Peeking from an empty deck');
     }
   }
 
   pushCard(card) {
-    this.cards.push(card)
+    this.cards.push(card);
   }
 
   _generateRandomDeck(numPlayers) {

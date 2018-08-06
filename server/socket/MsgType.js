@@ -18,6 +18,7 @@ module.exports.ServerSends = {
   GIVE_CLIENT_ID: "client-id",
   GIVE_GAME_ID: "game-session-id",
   GIVE_PLAYER_INFO: "GIVE_PLAYER_INFO",
+  GIVE_COPY_OF_ALL_CARDS: "GIVE_COPY_OF_ALL_CARDS",
   GIVE_ROLE: "give-role",
   GIVE_ANNOUNCER_MSG: "announcer-msg",
   ASK_DO_ROLE_ACTION: "do-role-action",

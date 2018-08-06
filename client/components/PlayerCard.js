@@ -1,16 +1,15 @@
 import React from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-// import { connect } from 'react-redux';
-// import ReactDOM from 'react-dom';
+import {cardImageMap} from './helper'
 
-const cardImageMap = {
-  ROBBER: '/img/roles/robber.png',
-  SEER: '/img/roles/seer.png',
-  TROUBLEMAKER: '/img/roles/troublemaker.png',
-  VILLAGER: '/img/roles/villager.png',
-  WEREWOLF: '/img/roles/werewolf.png',
-};
+// const cardImageMap = {
+//   ROBBER: '/img/roles/robber.png',
+//   SEER: '/img/roles/seer.png',
+//   TROUBLEMAKER: '/img/roles/troublemaker.png',
+//   VILLAGER: '/img/roles/villager.png',
+//   WEREWOLF: '/img/roles/werewolf.png',
+// };
 
 const PlayerCard = props => {
   const { publisherRef, videoElem } = props;

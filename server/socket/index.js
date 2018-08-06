@@ -60,15 +60,46 @@ const registerSocketListeners = serverSocket => {
   });
 };
 
+const setupAndSendTokFeedToClient = async (socket, playerId, game) => {
+  // sessionId will be the same for players in the same game
+  // Try to look for an existing tok session associated with the game
+  let sessionId = gameIdMap[game.getId()];
+  if (!sessionId) {
+    sessionId = await createSession();
+    gameIdMap[game.getId()] = sessionId;
+  }
+  // token will be different for every player
+  const token = createToken(sessionId);
+  console.log(
+    'In sockets connection. sessionId:',
+    helper.hashStr(sessionId),
+    'token:',
+    helper.hashStr(token)
+  );
+
+  // Video feed: send tok apiKey, sessionId, token
+  sendTokFeedToClient(socket, playerId, apiKey, sessionId, token);
+  return [sessionId, token];
+};
+
+const joinAGame = (socket, playerId) => {
+  // Join a game
+  const game = GamesManager.findOrCreateAGame();
+  console.log(
+    'GamesManager.findOrCreateAGame() returned a game with id:',
+    game.getId()
+  );
+  // Need to register listeners for the Game before joining game to catch all updates
+  registerGameListeners(game, playerId, socket);
+  GamesManager.joinGame(playerId, game);
+  return game;
+};
+
 module.exports = io => {
   io.on('connection', async serverSocket => {
     console.log(
       `A socket connection to the server has been made: ${serverSocket.id}`
     );
-
-    serverSocket.on('disconnect', () => {
-      console.log(`Connection ${serverSocket.id} has left the building`);
-    });
 
     registerSocketListeners(serverSocket);
 
@@ -82,29 +113,15 @@ module.exports = io => {
     sendPlayerInfoToClient(serverSocket, playerId, 'Mr. Smith');
 
     // Join a game
-    const game = GamesManager.findOrCreateAGame();
-    console.log(
-      'GamesManager.findOrCreateAGame() returned a game with id:',
-      game.getId()
-    );
-    // Need to register listeners for the Game before joining game to catch all updates
-    registerGameListeners(game, playerId, serverSocket);
-    GamesManager.joinGame(playerId, game);
+    const game = joinAGame(serverSocket, playerId);
 
-    // sessionId will be the same for players in the same game
-    // Try to look for an existing tok session associated with the game
-    let sessionId = gameIdMap[game.getId()];
-    if (!sessionId) {
-      sessionId = await createSession();
-      gameIdMap[game.getId()] = sessionId;
-    }
-    // token will be different for every player
-    const token = createToken(sessionId);
-    console.log(
-      'In sockets connection. sessionId:',
-      helper.hashStr(sessionId),
-      'token:',
-      helper.hashStr(token)
+    // Send misc setup info about the game (like what cards are in play)
+
+    // Set up video feed info
+    const [sessionId, token] = await setupAndSendTokFeedToClient(
+      serverSocket,
+      playerId,
+      game
     );
 
     // Save all this data to the socketIdMap
@@ -115,8 +132,11 @@ module.exports = io => {
       tokData: { sessionId, token },
     };
 
-    // Video feed: send tok apiKey, sessionId, token
-    sendTokFeedToClient(serverSocket, playerId, apiKey, sessionId, token);
+    serverSocket.on('disconnect', () => {
+      console.log(`Connection ${serverSocket.id} has left the building`);
+      // Remove them from any games they're a part of
+      GamesManager.removePlayer(playerId)
+    });
   });
 };
 

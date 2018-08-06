@@ -11,9 +11,11 @@ class Card {
   getId() { return this.id; }
   getRole() { return this.role; }
   toString() { return `id: ${this.id}. role: ${this.role}`}
+
+  copy() { return new Card(this.id, this.role) }
 }
 
-// module.exports = Card;
+// module.exports.Card = Card;
 
 module.exports.ROBBER = id => new Card(id, ROBBER);
 module.exports.SEER = id => new Card(id, SEER);
