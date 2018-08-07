@@ -44,9 +44,17 @@ module.exports.sendGameStartedToClient = (socket, allCards) => {
   ]);
 };
 
-module.exports.sendRoleToClient = (socket, role) => {
-  sendToClient(socket, ServerSends.GIVE_ROLE, role);
+module.exports.sendAnnouncerMsgToClient = (socket, msg) => {
+  sendToClient(socket, ServerSends.GIVE_ANNOUNCER_MSG, msg);
+}
+
+module.exports.sendRoleToClient = (socket, role, centerCards) => {
+  sendToClient(socket, ServerSends.GIVE_ROLE, [role, centerCards]);
 };
+
+module.exports.sendRoleActionDataToClient = (socket, actionData) => {
+  sendToClient(socket, ServerSends.GIVE_ROLE_ACTION_DATA, actionData);
+}
 
 module.exports.sendErrorToClient = (socket, err) => {
   sendToClient(socket, ServerSends.GIVE_ERROR, err);

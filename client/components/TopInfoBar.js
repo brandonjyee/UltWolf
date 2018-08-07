@@ -20,29 +20,32 @@ const TopInfoBar = props => {
     <Card>
       <CardContent>
         <Paper id="top-info-bar" className={classes.root} elevation={1}>
-            <div id="cards-in-play">
-              Cards in Play:
-              {props.allCards.map(card => {
-                return (
-                  <img
-                    key={card.id}
-                    className="all-cards"
-                    src={cardImageMap[card.role]}
-                  />
-                );
-              })}
-            </div>
-            <div>Action Order: Werewolf -> Seer -> Robber -> Troublemaker</div>
+          <div id="cards-in-play">
+            Cards in Play:
+            {props.allCards.map(card => {
+              return (
+                <img
+                  key={card.id}
+                  className="all-cards"
+                  src={cardImageMap[card.role]}
+                />
+              );
+            })}
+          </div>
+          <div>Action Order: Werewolf -> Seer -> Robber -> Troublemaker</div>
         </Paper>
         <Paper id="announcer-bar" className={classes.root} elevation={1}>
-            <div>Announcer:</div>
-            <div>msg</div>
+          <div>Announcer:</div>
+          <div>{props.announcerMsg}</div>
         </Paper>
       </CardContent>
     </Card>
   );
 };
 
-const mapStateToProps = ({ allCards = [] }) => ({ allCards });
+const mapStateToProps = ({ allCards = [], announcerMsg = '' }) => ({
+  allCards,
+  announcerMsg,
+});
 
 export default withStyles(styles)(connect(mapStateToProps)(TopInfoBar));

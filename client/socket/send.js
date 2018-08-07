@@ -15,3 +15,7 @@ export const sendToServer = (type, data) => {
 export const askServerToStartGame = () => {
   sendToServer(ClientSends.ASK_TO_START_GAME, '')
 }
+
+export const sendRoleActionToServer = (actionData) => {
+  sendToServer(ClientSends.TELL_ROLE_ACTION, actionData)
+}

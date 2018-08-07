@@ -3,14 +3,14 @@ const Deck = require('./Deck');
 const { GS_WAIT_TO_START, GS_WAIT_FOR_ROLE_INPUTS } = require('./GameState');
 const EventEmitter = require('events');
 const { uuidv4 } = require('./GameUtil');
+const { RoleActionMap } = require('./ComputeNightActionData');
 const {
   GE_PLAYER_JOINED_GAME,
   GE_GAME_STARTED,
   GE_PLAYER_GETS_ROLE_CARD,
   GE_WAIT_FOR_NIGHT_ACTIONS,
+  GE_ANNOUNCER_MSG,
 } = require('./GameEvents');
-
-
 
 class Game extends EventEmitter {
   // GameManager will provide an id for the Game
@@ -41,11 +41,11 @@ class Game extends EventEmitter {
   }
 
   getAllPlayerInfo() {
-    return Object.values(this.players)
+    return Object.values(this.players);
   }
 
   canJoin() {
-    return (this.gameState === GS_WAIT_TO_START && this.getNumPlayers() <= 5)
+    return this.gameState === GS_WAIT_TO_START && this.getNumPlayers() <= 5;
   }
 
   // Returns playerId. May be supplied with an id
@@ -78,6 +78,21 @@ class Game extends EventEmitter {
     return this.gameState === GS_WAIT_TO_START && this.getNumPlayers() >= 3;
   }
 
+  _computeDataForRoleActions() {
+    // For each player in the game
+    const playerActionData = {};
+    Object.values(this.players).forEach(player => {
+      const playerId = player.getId();
+      const card = player.getCard();
+      const role = card.getRole();
+      playerActionData[playerId] = RoleActionMap[role].computeActionData(
+        this,
+        playerId
+      );
+    });
+    return playerActionData;
+  }
+
   // Returns true if started, else false
   startGame() {
     const numPlayers = this.getNumPlayers();
@@ -108,7 +123,7 @@ class Game extends EventEmitter {
     // or client-side already has that info
 
     // Announcer announces night phase
-
+    this.emit(GE_ANNOUNCER_MSG, 'Night falls... Everyone close your eyes.')
     // const intervalStopper = {};
     // let secondsCount = 10;
     // var interval = setInterval(() => {
@@ -125,9 +140,19 @@ class Game extends EventEmitter {
 
     // Ask clients for role action. Provide data for each role
     // Will compute data for each player and generate map of playerId -> data
-    this.emit(GE_WAIT_FOR_NIGHT_ACTIONS, )
+    const playerActionData = this._computeDataForRoleActions();
+    this.emit(GE_WAIT_FOR_NIGHT_ACTIONS, playerActionData);
 
     return true;
+  }
+
+  doRoleAction(playerId, actionData) {
+    // Get player's role and process actionData based
+    if (this.gameState !== GS_WAIT_FOR_ROLE_INPUTS) {
+      throw new Error('Not allowed to do that role action in current game state')
+    }
+
+    return true
   }
 }
 

@@ -13,7 +13,7 @@ const PlayerCards = props => {
             <PlayerCard
               key={player.id}
               playerId={player.id}
-              playerName="YOU"
+              playerName={player.name + " (YOU)"}
               role={role}
               videoElem={thisVideoElem}
             />

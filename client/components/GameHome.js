@@ -7,6 +7,7 @@ import SnackDisplay from './SnackDisplay';
 import ErrorDisplay from './ErrorDisplay';
 import TopInfoBar from './TopInfoBar';
 import Timer from './Timer'
+import RoleActionForm from './RoleActionForm';
 // import 'hashwords' // In a browser context, gets added to window.hashwords
 // const hw = window.hashwords
 // const hw2 = window.hashwords()
@@ -36,6 +37,7 @@ class GameHome extends React.Component {
         <Button onClick={this.handleClickStartGame} variant="contained">
           Start Game
         </Button>
+        <RoleActionForm />
       </div>
     );
   }

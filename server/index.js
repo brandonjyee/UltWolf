@@ -78,7 +78,8 @@ function startListening() {
 
   // Set server to HTTPS which is required for browsers to do video
   const server = https.createServer(certOptions, app).listen(443, () => {
-    console.log(`You're app is now ready at http://localhost:${PORT}/`);
+    // console.log(`You're app is now ready at http://localhost:${PORT}/`);
+    console.log(`You're app is now ready at https://localhost`);
   })
 
   // const server = app.listen(PORT, () => {

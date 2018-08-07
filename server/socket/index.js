@@ -7,7 +7,7 @@ const {
 const { apiKey, createSession, createToken } = require('./opentok');
 const helper = require('../helper');
 const { sendPlayerInfoToClient, sendTokFeedToClient } = require('./send');
-const { handleAskStartGame } = require('./handlers');
+const { handleAskStartGame, handleDoRoleAction } = require('./handlers');
 const GamesManager = require('../game/GamesManager');
 const { registerGameListeners } = require('./gameListeners');
 
@@ -47,6 +47,12 @@ const registerSocketListeners = serverSocket => {
       switch (clientMsg.type) {
         case ClientSends.ASK_TO_START_GAME:
           return handleAskStartGame(
+            serverSocket,
+            getPlayerId(serverSocket),
+            getGame(serverSocket)
+          );
+        case ClientSends.TELL_ROLE_ACTION:
+          return handleDoRoleAction(
             serverSocket,
             getPlayerId(serverSocket),
             getGame(serverSocket)
@@ -135,7 +141,7 @@ module.exports = io => {
     serverSocket.on('disconnect', () => {
       console.log(`Connection ${serverSocket.id} has left the building`);
       // Remove them from any games they're a part of
-      GamesManager.removePlayer(playerId)
+      GamesManager.removePlayer(playerId);
     });
   });
 };

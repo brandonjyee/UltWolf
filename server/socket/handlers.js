@@ -14,5 +14,21 @@ module.exports.handleAskStartGame = (socket, playerId, game) => {
     }
   } catch (err) {
     console.error(err);
+    // Send error to client?
+  }
+};
+
+module.exports.handleDoRoleAction = (socket, playerId, game) => {
+  try {
+    console.log('handleDoRoleAction().');
+
+    // game.
+    // RoleMap[]
+    // const started = game.startGame();
+    // if (!started) {
+    //   sendErrorToClient(socket, `Could not start game. GameState needs to be ${GS_WAIT_TO_START}; it was ${game.getGameState()}. Players need to be >= 3 and <= 5. numPlayers: ${game.getNumPlayers()}`)
+    // }
+  } catch (err) {
+    console.error(err);
   }
 };

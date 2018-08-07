@@ -11,6 +11,7 @@ class Player {
 
   getName() { return this.name }
   getId() { return this.id }
+  getCard() { return this.card }
 
   giveCard(card) {
     this.card = card;

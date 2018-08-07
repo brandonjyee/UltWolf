@@ -11,7 +11,7 @@ export const setRole = (role) => ({
 export const roleReducer = (role = '', action) => {
   switch (action.type) {
     case SET_ROLE:
-      return [...role, action.role];
+      return action.role
     default:
       return role;
   }

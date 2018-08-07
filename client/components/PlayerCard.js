@@ -34,8 +34,8 @@ const PlayerCard = props => {
             className="player-video"
             ref={el => {
               if (videoElem && el) {
-                videoElem.style.height = '150px';
-                videoElem.style.width = '200px';
+                // videoElem.style.height = '150px';
+                // videoElem.style.width = '200px';
                 // thisVideoElem.style.borderRadius = '50%';
                 // Clear out the element and set the child as the video
                 el.innerHTML = '';
