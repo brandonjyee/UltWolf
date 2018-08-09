@@ -116,7 +116,9 @@ class Game extends EventEmitter {
       const card = this.deck.popCard();
       player.giveCard(card);
 
-      this.emit(GE_PLAYER_GETS_ROLE_CARD, player.getId(), card);
+      // FIXME
+      const centerCards = ['1','2','3']
+      this.emit(GE_PLAYER_GETS_ROLE_CARD, player.getId(), card, centerCards);
     });
 
     // Display to user what the character's night action is
@@ -151,6 +153,11 @@ class Game extends EventEmitter {
     if (this.gameState !== GS_WAIT_FOR_ROLE_INPUTS) {
       throw new Error('Not allowed to do that role action in current game state')
     }
+
+    const player = this.players[playerId]
+    if (!player) throw new Error('No player with id:', playerId)
+
+    const role = player.getCard().getRole();
 
     return true
   }

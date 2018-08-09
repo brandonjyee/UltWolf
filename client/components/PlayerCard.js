@@ -12,10 +12,8 @@ import {cardImageMap} from './helper'
 // };
 
 const PlayerCard = props => {
-  const { publisherRef, videoElem } = props;
-  if (publisherRef) {
-    console.log('In PlayerCard. publisherRef.current:', publisherRef.current);
-  }
+  const { videoElem } = props;
+
   return (
     <div>
       <Card>
